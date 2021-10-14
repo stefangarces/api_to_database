@@ -17,14 +17,11 @@ namespace api_to_database.Services
             _PersonModel = database.GetCollection<PersonModel>(settings.CustomersCollection);
         }
 
-        //public List<PersonModel> Get() =>
-        //    _PersonModel.Find(_ => true).ToList();
+        public List<PersonModel> Get() =>
+            _PersonModel.Find(_ => true).ToList();
 
-        public List<PersonModel> Get(string FirstName) =>
-            _PersonModel.Find(p => p.FirstName.ToString() == FirstName).ToList();
-
-        //public PersonModel Get(string id) =>
-        //    _PersonModel.Find<PersonModel>(book => book.Id == id).FirstOrDefault();
+        public List<PersonModel> Get(string socialSecurityNumber) =>
+            _PersonModel.Find(p => p.SocialSecurityNumber == socialSecurityNumber).ToList();
 
         public PersonModel Create(PersonModelDTO personModelDTO)
         {
@@ -32,18 +29,20 @@ namespace api_to_database.Services
             {
                 FirstName = personModelDTO.FirstName,
                 LastName = personModelDTO.LastName,
-                Address = personModelDTO.Address,
-                DateOfBirth = personModelDTO.DateOfBirth
+                SocialSecurityNumber = personModelDTO.SocialSecurityNumber,
+                Email = personModelDTO.Email,
+                SwishNumber = personModelDTO.SwishNumber,
+                Address = personModelDTO.Address
             };
             _PersonModel.InsertOne(personModel);
             return personModel;
         }
 
-        //public void Update(string id, PersonModel personModel) =>
-        //    _PersonModel.ReplaceOne(PersonModel => PersonModel.FirstName, personModel);
+        //public void Update(string socialSecurityNumber, PersonModel personModel) =>
+        //    _PersonModel.ReplaceOne(PersonModelDTO => PersonModelDTO.Email, personModelDTO);
 
-        //public void Remove(PersonModel bookIn) =>
-        //    _PersonModel.DeleteOne(book => book.Id == bookIn.Id);
+        //public void Update(string socialSecurityNumber) =>
+        //    _PersonModel.ReplaceOne(p => p.swishNumber == p.swishNumber);
 
         //public void Remove(string id) =>
         //    _PersonModel.DeleteOne(book => book.Id == id);

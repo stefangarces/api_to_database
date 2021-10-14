@@ -1,28 +1,34 @@
 ﻿using api_to_database.Models;
 using api_to_database.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System;
 
 namespace api_to_database.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly DatabasCustomersServices _databasCustomersServices;
 
-        public BooksController(DatabasCustomersServices databasCustomersServices)
+        public CustomersController(DatabasCustomersServices databasCustomersServices)
         {
             _databasCustomersServices = databasCustomersServices;
         }
 
-        //[HttpGet]
-        //public ActionResult<List<PersonModel>> Get() =>
-        //    _databasCustomersServices.Get();
+        [HttpGet]
+        public ActionResult<List<PersonModel>> Get() =>
+            _databasCustomersServices.Get();
 
-        [HttpGet("{firstName}")]
-        public ActionResult<PersonModel> Get(string firstName)
+
+        [HttpGet("{socialSecurityNumber}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<PersonModelDTO>> Get(string socialSecurityNumber)
         {
-            var person = _databasCustomersServices.Get(firstName);
+            var person = _databasCustomersServices.Get(socialSecurityNumber);
 
             if (person == null)
             {
@@ -33,40 +39,30 @@ namespace api_to_database.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<PersonModel> Create(PersonModelDTO personModelDTO)
         {
             var model = _databasCustomersServices.Create(personModelDTO);
             return CreatedAtRoute(nameof(Get), new { id = model.Id.ToString() }, model);
         }
 
-        //[HttpPut("{id:length(24)}")]
-        //public IActionResult Update(string id, Book bookIn)
+        //[HttpPut]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public ActionResult<IEnumerable<PersonModelDTO>> Pi(PersonModel personModel)
         //{
-        //    var book = _databasCustomersServices.Get(id);
+        //    var model = _databasCustomersServices.Update(personModel);
+        //    return CreatedAtRoute(nameof(Remove), new { id = model.Id.ToString() }, model);
 
-        //    if (book == null)
+        //    var person = _databasCustomersServices.Get(socialSecurityNumber);
+
+        //    if (person == null)
         //    {
-        //        return NotFound();
+        //        return NotFound("Hitta inte användaren.");
         //    }
 
-        //    _databasCustomersServices.Update(id, bookIn);
-
-        //    return NoContent();
-        //}
-
-        //[HttpDelete("{id:length(24)}")]
-        //public IActionResult Delete(string id)
-        //{
-        //    var book = _databasCustomersServices.Get(id);
-
-        //    if (book == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _databasCustomersServices.Remove(book.Id);
-
-        //    return NoContent();
+        //    return Ok(person);
         //}
     }
 }
